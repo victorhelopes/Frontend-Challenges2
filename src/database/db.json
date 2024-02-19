@@ -1,0 +1,22 @@
+{
+    "driver": [
+      {
+        "id": 1,
+        "name": "Hambúrguer",
+        "document": "Pão, bife de hambúrguer 90g, salada e batata.",
+        "vehicle_id": 1
+      }
+    ],
+    "vehicle": [
+      {
+        "id": 1,
+        "brand": "Hambúrgueres",
+        "license_plate": "Hambúrgueres"
+      },
+      {
+        "id": 2,
+        "brand": "Refrigerantes",
+        "license_plate": "Refrigerantes"
+      }
+    ]
+  }
