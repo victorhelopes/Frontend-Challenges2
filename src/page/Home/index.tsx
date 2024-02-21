@@ -32,7 +32,7 @@ export function Home(){
                     <TableCell>Placa</TableCell>
                 </TableHead>
                 <TableBody>
-                    {data.length !== 0 ? 
+                    {data.length === 0 ? 
                         <TableRow>
                             <TableCell colSpan={3} sx={{textAlign: 'center'}}>
                                 Não há cadastro de carros no momento 
