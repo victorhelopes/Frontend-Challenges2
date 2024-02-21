@@ -9,46 +9,6 @@
   ],
   "vehicle": [
     {
-      "id": "1",
-      "brand": "Hambúrgueres",
-      "licensePlate": "Hambúrgueres"
-    },
-    {
-      "id": "2",
-      "brand": "Refrigerantes",
-      "licensePlate": "Refrigerantes"
-    },
-    {
-      "id": "80a7",
-      "brand": "Marca",
-      "licensePlate": "hka2987"
-    },
-    {
-      "id": "0427",
-      "brand": "a",
-      "licensePlate": "a"
-    },
-    {
-      "id": "b8de",
-      "brand": "ASD",
-      "licensePlate": "ASD"
-    },
-    {
-      "id": "fc10",
-      "brand": "",
-      "licensePlate": ""
-    },
-    {
-      "id": "cdec",
-      "brand": "",
-      "licensePlate": ""
-    },
-    {
-      "id": "015c",
-      "brand": "",
-      "licensePlate": ""
-    },
-    {
       "id": "6328",
       "brand": "a",
       "licensePlate": "a"

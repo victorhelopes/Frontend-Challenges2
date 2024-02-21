@@ -9,7 +9,7 @@ interface IHeader{
 export function Header({setModalIsOpen}: IHeader){
     const [menuIsOpen, setMenuIsOpen] = useState(false)
     return(
-        <Grid display="flex" justifyContent="space-between" alignItems="center" paddingX={{sm: 1 ,md: 11}} paddingTop={2.5}>
+        <Grid display="flex" justifyContent="space-between" alignItems="center" paddingTop={2.5}>
             <div>
                 <Button onClick={()=>{setMenuIsOpen(!menuIsOpen)}}>Veículos</Button>
                 <Menu open={menuIsOpen}>
