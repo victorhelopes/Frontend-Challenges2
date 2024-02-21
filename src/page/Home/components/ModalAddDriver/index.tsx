@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import { cpf } from "cpf-cnpj-validator";
 
 interface IModalAddVehicle{
+    id?: string;
     isModalOpen: boolean
     closeModal: ()=> void;
 }
@@ -15,7 +16,7 @@ interface IVehicle {
     id: string;
 }
 
-export function ModalAddDriver({isModalOpen, closeModal}: IModalAddVehicle){
+export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
     const [name, setName] = useState('');
     const [nameError, setNameError] = useState<string | null>();
     
@@ -26,7 +27,7 @@ export function ModalAddDriver({isModalOpen, closeModal}: IModalAddVehicle){
     const [vehicle, setVehicle] = useState<string | null>('');
 
     useEffect(()=>{
-        async function getgVehicles(){
+        async function getVehicles(){
             try {
                 const { data } = await api.get('vehicle');
                 setVehicles(data)
@@ -35,10 +36,24 @@ export function ModalAddDriver({isModalOpen, closeModal}: IModalAddVehicle){
             }
         }
 
-        getgVehicles();
-    },[])
+        async function getDriverInfos(){
+            if(id){
+                try {
+                    const { data } = await api.get(`driver/${id}`);
+                    setName(data.name)
+                    setDocument(data.document)
+                    setVehicle(data.vehicle_id)
+                } catch (error) {
+                    console.log(error);
+                }   
+            }
+        }
 
-    async function addVehicle(){
+        getVehicles();
+        getDriverInfos();
+    },[id,isModalOpen])
+
+    function validateForm(){
         if(!name.length){
             setNameError('Escreva o nome do motorista')
         }else{
@@ -52,20 +67,40 @@ export function ModalAddDriver({isModalOpen, closeModal}: IModalAddVehicle){
         }
 
         if(!name.length || !document.length){
-            return;
+            return false;
         }
+        return true;
 
+    }
+
+    async function updateDriver(){
+        if(validateForm())
         try{
             const body = {
                 name,
                 document: cpf.format(document),
                 vehicle_id: vehicle
             }
-            await api.post('driver', body)
+            await api.put(`driver/${id}`, body)
             close();
         }catch(e){
             console.log(e)
         }
+    }
+
+    async function addDriver(){
+        if(validateForm())
+            try{
+                const body = {
+                    name,
+                    document: cpf.format(document),
+                    vehicle_id: vehicle
+                }
+                await api.post('driver', body)
+                close();
+            }catch(e){
+                console.log(e)
+            }
     }
 
     function close(){
@@ -124,7 +159,16 @@ export function ModalAddDriver({isModalOpen, closeModal}: IModalAddVehicle){
                     </Grid>
                     <Grid display={'flex'} justifyContent={'center'} gap={2}>
                         <Button variant="contained" color="error" onClick={close}>Cancelar</Button>
-                        <Button variant="contained" color="success" onClick={addVehicle}>Confirmar</Button>
+                        <Button 
+                            variant="contained" 
+                            color="success" 
+                            onClick={()=>{
+                                if(id) return updateDriver(); 
+                                return addDriver()
+                            }}
+                        >
+                            Confirmar
+                        </Button>
                     </Grid>
                 </Grid>
             </Box>

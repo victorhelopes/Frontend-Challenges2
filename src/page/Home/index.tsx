@@ -6,6 +6,7 @@ import { api } from "../../services";
 import { ModalAddDriver } from "./components/ModalAddDriver";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ModalRemoveInfo } from "./components/ModalRemoveInfo";
+import { Edit } from "@mui/icons-material";
 
 interface ITable{
     header: string;
@@ -30,7 +31,7 @@ export function Home(){
     const [modalVehicleIsOpen, setModalVehicleIsOpen] = useState<boolean>(false);
     const [modalDriverIsOpen, setModalDriverIsOpen] = useState<boolean>(false);
     const [modaRemoveInfoIsOpen, setModalRemoveInfoIsOpen] = useState<boolean>(false);
-    const [idInfoRemoving, setIdInfoRemoving] = useState<string>('');
+    const [idInfoRemovingOrediting, setIdInfoRemovingOrEditing] = useState<string>('');
 
     const [listItems, setListItems] = useState<string>('driver');
     const [tableHeaderAndFields, setTableHeaderAndFields] = useState<ITable[]>(driverTableHeader)
@@ -100,14 +101,28 @@ export function Home(){
                                             <TableCell>
                                                 <IconButton 
                                                     onClick={()=>{
+                                                        setIdInfoRemovingOrEditing(infomartion.id)
+                                                        if(listItems ==='driver'){
+                                                            setModalDriverIsOpen(true)
+                                                        }
+                                                        if(listItems ==='vehicle'){
+                                                            setModalVehicleIsOpen(true)
+                                                        }
+                                                    }}>
+                                                        <Edit/>
+                                                    </IconButton>
+                                                <IconButton 
+                                                    onClick={()=>{
                                                         setModalRemoveInfoIsOpen(true)
-                                                        setIdInfoRemoving(infomartion.id)
-                                                    }}><DeleteIcon/></IconButton>
+                                                        setIdInfoRemovingOrEditing(infomartion.id)
+                                                    }}>
+                                                        <DeleteIcon/>
+                                                    </IconButton>
                                             </TableCell>)
                                         }
                                         if(tableHeaderAndField.field === 'vehicle_id'){
                                         return <TableCell>
-                                            {infomartion[tableHeaderAndField.field].length? 'Sim': 'Não'}
+                                            {infomartion[tableHeaderAndField.field]?.length? 'Sim': 'Não'}
                                         </TableCell>
                                         }
                                         return <TableCell>
@@ -121,9 +136,9 @@ export function Home(){
                     </TableBody>
             </Table>
 
-            <ModalAddVehicle isModalOpen={modalVehicleIsOpen} closeModal={()=>{setModalVehicleIsOpen(false)}}/>
-            <ModalAddDriver isModalOpen={modalDriverIsOpen} closeModal={()=>{setModalDriverIsOpen(false)}}/>
-            <ModalRemoveInfo isModalOpen={modaRemoveInfoIsOpen} closeModal={()=>{setModalRemoveInfoIsOpen(false)}} tableName={listItems} id={idInfoRemoving}/>
+            <ModalAddVehicle id={idInfoRemovingOrediting} isModalOpen={modalVehicleIsOpen} closeModal={()=>{setModalVehicleIsOpen(false)}}/>
+            <ModalAddDriver id={idInfoRemovingOrediting} isModalOpen={modalDriverIsOpen} closeModal={()=>{setModalDriverIsOpen(false)}}/>
+            <ModalRemoveInfo isModalOpen={modaRemoveInfoIsOpen} closeModal={()=>{setModalRemoveInfoIsOpen(false)}} tableName={listItems} id={idInfoRemovingOrediting}/>
         </Container>
     )
 }

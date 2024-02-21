@@ -1,19 +1,35 @@
 import { Box, Button, Grid, Modal, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../../../services";
 
 interface IModalAddVehicle{
+    id?: string;
     isModalOpen: boolean
     closeModal: ()=> void;
 }
 
-export function ModalAddVehicle({isModalOpen, closeModal}: IModalAddVehicle){
+export function ModalAddVehicle({id, isModalOpen, closeModal}: IModalAddVehicle){
     const [brand, setBrand] = useState('');
     const [brandError, setBrandError] = useState<string | null>();
     const [licensePlate, setLicensePlate] = useState('');
     const [licensePlateError, setLicensePlateError] = useState<string | null>();
 
-    async function addVehicle(){
+    useEffect(()=>{
+        async function getVehicleInfos(){
+            if(id){
+                try {
+                    const { data } = await api.get(`vehicle/${id}`);
+                    setBrand(data.brand)
+                    setLicensePlate(data.licensePlate)
+                } catch (error) {
+                    console.log(error);
+                }   
+            }
+        }
+        getVehicleInfos();
+    },[id,isModalOpen])
+
+    function validateForm(){
         if(!brand.length){
             setBrandError('Escreva o nome da marca do carro')
         }else{
@@ -27,9 +43,26 @@ export function ModalAddVehicle({isModalOpen, closeModal}: IModalAddVehicle){
         }
 
         if(!brand.length || !licensePlate.length){
-            return;
+            return false;
         }
+        return true;
+    }
+    
+    async function updateVehicle(){
+        if(validateForm())
+        try{
+            await api.put(`vehicle/${id}`, {
+                brand,
+                licensePlate
+            })
+            close();
+        }catch(e){
+            console.log(e)
+        }
+    }
 
+    async function addVehicle(){
+        if(validateForm())
         try{
             await api.post('vehicle', {
                 brand,
@@ -76,7 +109,15 @@ export function ModalAddVehicle({isModalOpen, closeModal}: IModalAddVehicle){
                     </Grid>
                     <Grid display={'flex'} justifyContent={'center'} gap={2}>
                         <Button variant="contained" color="error" onClick={close}>Cancelar</Button>
-                        <Button variant="contained" color="success" onClick={addVehicle}>Confirmar</Button>
+                        <Button 
+                            variant="contained" 
+                            color="success" 
+                            onClick={()=>{
+                                if(id) return updateVehicle(); 
+                                addVehicle();
+                            }}>
+                                Confirmar
+                        </Button>
                     </Grid>
                     </Grid>
                 </Box>
