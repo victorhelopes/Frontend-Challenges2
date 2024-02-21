@@ -5,13 +5,23 @@ import { Container, Table, TableBody, TableCell, TableHead, TableRow } from "@mu
 import { api } from "../../services";
 import { ModalAddDriver } from "./components/ModalAddDriver";
 
+interface ITable{
+    header: string;
+    field: string;
+}
+
+const driverTableHeader:ITable[] = [{header:'Id', field: 'id'},{header: 'Nome', field: 'name'}, {header:'Documento', field:'document'}, {header:'Vínculo', field:'vehicle_id'}]
+const vehicleTableHeader: ITable[] = [{header:'Id', field: 'id'},{header: 'Marca', field: 'brand'}, {header:'Placa', field:'licensePlate'}]
+
 export function Home(){
-    const [modalVehicleIsOpen, setModalVehicleIsOpen] = useState(false);
-    const [modalDriverIsOpen, setModalDriverIsOpen] = useState(false);
+    const [modalVehicleIsOpen, setModalVehicleIsOpen] = useState<boolean>(false);
+    const [modalDriverIsOpen, setModalDriverIsOpen] = useState<boolean>(false);
+    const [listItems, setListItems] = useState<string>('');
+    const [tableHeaderAndFields, setTableHeaderAndFields] = useState<ITable[]>(driverTableHeader)
     const [data, setData] = useState([]);
 
     useEffect(()=>{
-        async function getgVehicles(){
+        async function getVehicles(){
             try {
                 const { data } = await api.get('vehicle');
                 setData(data)
@@ -19,9 +29,25 @@ export function Home(){
                 console.log(error);
             }
         }
-
-        getgVehicles();
-    },[])
+       
+        async function getDrivers(){
+            try {
+                const { data } = await api.get('driver');
+                setData(data)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        
+        if(listItems ==='vehicle' && !modalVehicleIsOpen){
+            setTableHeaderAndFields(vehicleTableHeader)
+            getVehicles();
+        }
+        if(listItems ==='driver' && !modalDriverIsOpen){
+            setTableHeaderAndFields(driverTableHeader)
+            getDrivers();
+        }
+    },[listItems, modalVehicleIsOpen, modalDriverIsOpen])
 
     return(
         <Container sx={{paddingX: {md:10, sm:2}}}>
@@ -30,35 +56,34 @@ export function Home(){
                 setModalDriverIsOpen(true);
                 if(value === 'vehicle')
                     setModalVehicleIsOpen(true)
-                }}/>
+                }}
+                setListItems={(value: string)=>{ setListItems(value)}}
+            />
 
             <Table sx={{marginTop: 5}}>
                 <TableHead>
-                    <TableCell>Id</TableCell>
-                    <TableCell>Marca</TableCell>
-                    <TableCell>Placa</TableCell>
+                    {tableHeaderAndFields.map((item)=>{
+                        return <TableCell>{item.header}</TableCell>
+                    })
+                    }
                 </TableHead>
                 <TableBody>
                     {data.length === 0 ? 
                         <TableRow>
-                            <TableCell colSpan={3} sx={{textAlign: 'center'}}>
-                                Não há cadastro de carros no momento 
+                            <TableCell colSpan={tableHeaderAndFields.length} sx={{textAlign: 'center'}}>
+                                Não há informações para serem mostradas no momento 
                             </TableCell>
                         </TableRow>
                     : 
                         data.map((infomartion: any)=>{
                             return(
-                                    <TableRow>
-                                        <TableCell>
-                                        {infomartion.id}
+                                <TableRow>
+                                    {tableHeaderAndFields.map((tableHeaderAndField)=>{
+                                        return <TableCell>
+                                        {infomartion[tableHeaderAndField.field]}
                                         </TableCell>
-                                        <TableCell>
-                                        {infomartion.brand}
-                                        </TableCell>
-                                        <TableCell>
-                                        {infomartion.licensePlate}
-                                        </TableCell>
-                                    </TableRow>
+                                    })}
+                                </TableRow>
                             )
                         })
                     }

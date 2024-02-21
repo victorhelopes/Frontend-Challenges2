@@ -4,9 +4,10 @@ import { useState } from 'react';
 
 interface IHeader{
     setModalIsOpen: (value: string)=>void;
+    setListItems: (value: string)=> void;
 }
 
-export function Header({setModalIsOpen}: IHeader){
+export function Header({setModalIsOpen, setListItems}: IHeader){
     const [anchorElDriver, setAnchorElDriver] = useState(null);
     const [anchorElVehicle, setAnchorElVehicle] = useState(null);
     const openDriver = Boolean(anchorElDriver);
@@ -33,7 +34,17 @@ export function Header({setModalIsOpen}: IHeader){
                             setModalIsOpen('driver');
                             handleClose()
                         }}
-                    >Cadastrar motorista</MenuItem>
+                    >
+                        Cadastrar motorista
+                    </MenuItem>
+                    <MenuItem 
+                        onClick={()=>{
+                            setListItems('driver');
+                            handleClose()
+                        }}
+                    >
+                        Listar motoristas
+                    </MenuItem>
                 </Menu>
                 <Button onClick={handleOpenVehicles}>Veículos</Button>
                 <Menu onClose={handleClose} open={openVehicle} anchorEl={anchorElVehicle}>
@@ -42,7 +53,17 @@ export function Header({setModalIsOpen}: IHeader){
                             setModalIsOpen('vehicle');
                             handleClose()
                         }}
-                    >Cadastrar veículo</MenuItem>
+                    >
+                        Cadastrar veículo
+                    </MenuItem>
+                    <MenuItem 
+                        onClick={()=>{
+                            setListItems('vehicle');
+                            handleClose()
+                        }}
+                    >
+                        Listar veículos
+                    </MenuItem>
                 </Menu>
             </div>
             <img src={gobraxLogo} alt='gobraxLogo'/>
