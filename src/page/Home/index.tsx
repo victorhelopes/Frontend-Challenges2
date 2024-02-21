@@ -1,22 +1,38 @@
 import { useEffect, useState } from "react";
 import { Header } from "../../components/Header";
 import { ModalAddVehicle } from "./components/ModalAddVehicle";
-import { Container, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { Container, IconButton, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { api } from "../../services";
 import { ModalAddDriver } from "./components/ModalAddDriver";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { ModalRemoveInfo } from "./components/ModalRemoveInfo";
 
 interface ITable{
     header: string;
     field: string;
 }
 
-const driverTableHeader:ITable[] = [{header:'Id', field: 'id'},{header: 'Nome', field: 'name'}, {header:'Documento', field:'document'}, {header:'Vínculo', field:'vehicle_id'}]
-const vehicleTableHeader: ITable[] = [{header:'Id', field: 'id'},{header: 'Marca', field: 'brand'}, {header:'Placa', field:'licensePlate'}]
+const driverTableHeader:ITable[] = [
+    {header:'Id', field: 'id'},
+    {header: 'Nome', field: 'name'}, 
+    {header:'Documento', field:'document'}, 
+    {header:'Vínculo', field:'vehicle_id'}, 
+    {header: '', field:'action'}
+]
+const vehicleTableHeader: ITable[] = [
+    {header:'Id', field: 'id'},
+    {header: 'Marca', field: 'brand'}, 
+    {header:'Placa', field:'licensePlate'},
+    {header: '', field:'action'}
+]
 
 export function Home(){
     const [modalVehicleIsOpen, setModalVehicleIsOpen] = useState<boolean>(false);
     const [modalDriverIsOpen, setModalDriverIsOpen] = useState<boolean>(false);
-    const [listItems, setListItems] = useState<string>('');
+    const [modaRemoveInfoIsOpen, setModalRemoveInfoIsOpen] = useState<boolean>(false);
+    const [idInfoRemoving, setIdInfoRemoving] = useState<string>('');
+
+    const [listItems, setListItems] = useState<string>('driver');
     const [tableHeaderAndFields, setTableHeaderAndFields] = useState<ITable[]>(driverTableHeader)
     const [data, setData] = useState([]);
 
@@ -47,7 +63,7 @@ export function Home(){
             setTableHeaderAndFields(driverTableHeader)
             getDrivers();
         }
-    },[listItems, modalVehicleIsOpen, modalDriverIsOpen])
+    },[listItems, modalVehicleIsOpen, modalDriverIsOpen, modaRemoveInfoIsOpen])
 
     return(
         <Container sx={{paddingX: {md:10, sm:2}}}>
@@ -79,6 +95,21 @@ export function Home(){
                             return(
                                 <TableRow>
                                     {tableHeaderAndFields.map((tableHeaderAndField)=>{
+                                        if(tableHeaderAndField.field === 'action'){
+                                            return (
+                                            <TableCell>
+                                                <IconButton 
+                                                    onClick={()=>{
+                                                        setModalRemoveInfoIsOpen(true)
+                                                        setIdInfoRemoving(infomartion.id)
+                                                    }}><DeleteIcon/></IconButton>
+                                            </TableCell>)
+                                        }
+                                        if(tableHeaderAndField.field === 'vehicle_id'){
+                                        return <TableCell>
+                                            {infomartion[tableHeaderAndField.field].length? 'Sim': 'Não'}
+                                        </TableCell>
+                                        }
                                         return <TableCell>
                                         {infomartion[tableHeaderAndField.field]}
                                         </TableCell>
@@ -89,8 +120,10 @@ export function Home(){
                     }
                     </TableBody>
             </Table>
+
             <ModalAddVehicle isModalOpen={modalVehicleIsOpen} closeModal={()=>{setModalVehicleIsOpen(false)}}/>
             <ModalAddDriver isModalOpen={modalDriverIsOpen} closeModal={()=>{setModalDriverIsOpen(false)}}/>
+            <ModalRemoveInfo isModalOpen={modaRemoveInfoIsOpen} closeModal={()=>{setModalRemoveInfoIsOpen(false)}} tableName={listItems} id={idInfoRemoving}/>
         </Container>
     )
 }

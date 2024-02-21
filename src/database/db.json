@@ -1,4 +1,11 @@
 {
-  "driver": [],
+  "driver": [
+    {
+      "id": "05ff",
+      "name": "Teste",
+      "document": "356.006.660-39",
+      "vehicle_id": ""
+    }
+  ],
   "vehicle": []
 }
