@@ -1,33 +1,50 @@
-import * as React from 'react';
 import { Button, Grid, Menu, MenuItem } from '@mui/material'
 import gobraxLogo from '../../assets/gobraxLogo.png'
+import { useState } from 'react';
 
 interface IHeader{
-    setModalIsOpen: ()=>void;
+    setModalIsOpen: (value: string)=>void;
 }
 
 export function Header({setModalIsOpen}: IHeader){
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
+    const [anchorElDriver, setAnchorElDriver] = useState(null);
+    const [anchorElVehicle, setAnchorElVehicle] = useState(null);
+    const openDriver = Boolean(anchorElDriver);
+    const openVehicle = Boolean(anchorElVehicle);
 
-    const handleClick = (event: any) => {
-        setAnchorEl(event.currentTarget);
+    const handleOpenDriver = (event: any) => {
+        setAnchorElDriver(event.currentTarget);
+    };
+    const handleOpenVehicles = (event: any) => {
+        setAnchorElVehicle(event.currentTarget);
     };
     const handleClose = () => {
-        setAnchorEl(null);
+        setAnchorElDriver(null);
+        setAnchorElVehicle(null);
     };
 
     return(
         <Grid display="flex" justifyContent="space-between" alignItems="center" paddingTop={2.5}>
-            <Button onClick={handleClick}>Veículos</Button>
-                <Menu onClose={handleClose} open={open} anchorEl={anchorEl}>
+            <div>
+                <Button onClick={handleOpenDriver}>Motorista</Button>
+                <Menu onClose={handleClose} open={openDriver} anchorEl={anchorElDriver}>
                     <MenuItem 
                         onClick={()=>{
-                            setModalIsOpen();
+                            setModalIsOpen('driver');
+                            handleClose()
+                        }}
+                    >Cadastrar motorista</MenuItem>
+                </Menu>
+                <Button onClick={handleOpenVehicles}>Veículos</Button>
+                <Menu onClose={handleClose} open={openVehicle} anchorEl={anchorElVehicle}>
+                    <MenuItem 
+                        onClick={()=>{
+                            setModalIsOpen('vehicle');
                             handleClose()
                         }}
                     >Cadastrar veículo</MenuItem>
                 </Menu>
+            </div>
             <img src={gobraxLogo} alt='gobraxLogo'/>
             <Button href='https://www.linkedin.com/in/victor-hugo-eust%C3%A1quio-lopes-432a88a7/' variant="contained" color='primary'>LinkedIn</Button>
         </Grid>

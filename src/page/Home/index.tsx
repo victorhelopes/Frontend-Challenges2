@@ -3,9 +3,11 @@ import { Header } from "../../components/Header";
 import { ModalAddVehicle } from "./components/ModalAddVehicle";
 import { Container, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { api } from "../../services";
+import { ModalAddDriver } from "./components/ModalAddDriver";
 
 export function Home(){
-    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalVehicleIsOpen, setModalVehicleIsOpen] = useState(false);
+    const [modalDriverIsOpen, setModalDriverIsOpen] = useState(false);
     const [data, setData] = useState([]);
 
     useEffect(()=>{
@@ -23,7 +25,12 @@ export function Home(){
 
     return(
         <Container sx={{paddingX: {md:10, sm:2}}}>
-            <Header setModalIsOpen={()=>{setModalIsOpen(true)}}/>
+            <Header setModalIsOpen={(value: string)=>{
+                if(value === 'driver')
+                setModalDriverIsOpen(true);
+                if(value === 'vehicle')
+                    setModalVehicleIsOpen(true)
+                }}/>
 
             <Table sx={{marginTop: 5}}>
                 <TableHead>
@@ -57,7 +64,8 @@ export function Home(){
                     }
                     </TableBody>
             </Table>
-            <ModalAddVehicle isModalOpen={modalIsOpen} closeModal={()=>{setModalIsOpen(false)}}/>
+            <ModalAddVehicle isModalOpen={modalVehicleIsOpen} closeModal={()=>{setModalVehicleIsOpen(false)}}/>
+            <ModalAddDriver isModalOpen={modalDriverIsOpen} closeModal={()=>{setModalDriverIsOpen(false)}}/>
         </Container>
     )
 }
