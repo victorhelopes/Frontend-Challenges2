@@ -1,6 +1,7 @@
 import { Box, Button, Grid, Modal, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { api } from "../../../../services";
+import { AlertMessage } from "../../../../components/AlertMessage";
 
 interface IModalAddVehicle{
     id?: string;
@@ -9,8 +10,12 @@ interface IModalAddVehicle{
 }
 
 export function ModalAddVehicle({id, isModalOpen, closeModal}: IModalAddVehicle){
+    const [message, setMessage] = useState<string>('');
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+
     const [brand, setBrand] = useState('');
     const [brandError, setBrandError] = useState<string | null>();
+
     const [licensePlate, setLicensePlate] = useState('');
     const [licensePlateError, setLicensePlateError] = useState<string | null>();
 
@@ -22,7 +27,8 @@ export function ModalAddVehicle({id, isModalOpen, closeModal}: IModalAddVehicle)
                     setBrand(data.brand)
                     setLicensePlate(data.licensePlate)
                 } catch (error) {
-                    console.log(error);
+                   setMessage('Erro ao buscar dados!');
+                    setShowAlert(true)
                 }   
             }
         }
@@ -57,7 +63,8 @@ export function ModalAddVehicle({id, isModalOpen, closeModal}: IModalAddVehicle)
             })
             close();
         }catch(e){
-            console.log(e)
+            setMessage('Erro ao atualizar dados!');
+            setShowAlert(true)
         }
     }
 
@@ -70,7 +77,8 @@ export function ModalAddVehicle({id, isModalOpen, closeModal}: IModalAddVehicle)
             })
             close();
         }catch(e){
-            console.log(e)
+            setMessage('Erro ao cadastrar veículo!');
+            setShowAlert(true)
         }
     }
 
@@ -121,6 +129,7 @@ export function ModalAddVehicle({id, isModalOpen, closeModal}: IModalAddVehicle)
                     </Grid>
                     </Grid>
                 </Box>
+                {showAlert && <AlertMessage message={message} close={()=>{setShowAlert(false)}}/>}
            </div>
         </Modal>
     )

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../../../services";
 import TextField from "@mui/material/TextField";
 import { cpf } from "cpf-cnpj-validator";
+import { AlertMessage } from "../../../../components/AlertMessage";
 
 interface IModalAddVehicle{
     id?: string;
@@ -17,6 +18,9 @@ interface IVehicle {
 }
 
 export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
+    const [message, setMessage] = useState<string>('');
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+
     const [name, setName] = useState('');
     const [nameError, setNameError] = useState<string | null>();
     
@@ -32,7 +36,8 @@ export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
                 const { data } = await api.get('vehicle');
                 setVehicles(data)
             } catch (error) {
-                console.log(error);
+                setMessage('Erro ao realizar busca!');
+                setShowAlert(true)
             }
         }
 
@@ -44,7 +49,8 @@ export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
                     setDocument(data.document)
                     setVehicle(data.vehicle_id)
                 } catch (error) {
-                    console.log(error);
+                    setMessage('Erro ao realizar busca!');
+                    setShowAlert(true)
                 }   
             }
         }
@@ -84,7 +90,8 @@ export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
             await api.put(`driver/${id}`, body)
             close();
         }catch(e){
-            console.log(e)
+            setMessage('Erro ao atualizar dados!');
+            setShowAlert(true)
         }
     }
 
@@ -99,7 +106,8 @@ export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
                 await api.post('driver', body)
                 close();
             }catch(e){
-                console.log(e)
+                setMessage('Erro ao cadastrar motorista!');
+                setShowAlert(true)
             }
     }
 
@@ -171,6 +179,7 @@ export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
                         </Button>
                     </Grid>
                 </Grid>
+            {showAlert && <AlertMessage message={message} close={()=>{setShowAlert(false)}}/>}
             </Box>
         </Modal>
     )

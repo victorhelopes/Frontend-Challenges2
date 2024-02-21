@@ -7,6 +7,7 @@ import { ModalAddDriver } from "./components/ModalAddDriver";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ModalRemoveInfo } from "./components/ModalRemoveInfo";
 import { Edit } from "@mui/icons-material";
+import { AlertMessage } from "../../components/AlertMessage";
 
 interface ITable{
     header: string;
@@ -20,6 +21,7 @@ const driverTableHeader:ITable[] = [
     {header:'Vínculo', field:'vehicle_id'}, 
     {header: '', field:'action'}
 ]
+
 const vehicleTableHeader: ITable[] = [
     {header:'Id', field: 'id'},
     {header: 'Marca', field: 'brand'}, 
@@ -27,11 +29,15 @@ const vehicleTableHeader: ITable[] = [
     {header: '', field:'action'}
 ]
 
+
+
 export function Home(){
+    const [showAlert, setShowAlert] = useState<boolean>(false);
     const [modalVehicleIsOpen, setModalVehicleIsOpen] = useState<boolean>(false);
     const [modalDriverIsOpen, setModalDriverIsOpen] = useState<boolean>(false);
     const [modaRemoveInfoIsOpen, setModalRemoveInfoIsOpen] = useState<boolean>(false);
     const [idInfoRemovingOrediting, setIdInfoRemovingOrEditing] = useState<string>('');
+    const [message, setMessage] = useState<string>('');
 
     const [listItems, setListItems] = useState<string>('driver');
     const [tableHeaderAndFields, setTableHeaderAndFields] = useState<ITable[]>(driverTableHeader)
@@ -43,7 +49,9 @@ export function Home(){
                 const { data } = await api.get('vehicle');
                 setData(data)
             } catch (error) {
-                console.log(error);
+                setMessage('Erro ao realizar busca!');
+                setShowAlert(true)
+                
             }
         }
        
@@ -52,7 +60,8 @@ export function Home(){
                 const { data } = await api.get('driver');
                 setData(data)
             } catch (error) {
-                console.log(error);
+                setMessage('Erro ao realizar busca!');
+                setShowAlert(true)
             }
         }
         
@@ -139,6 +148,7 @@ export function Home(){
             <ModalAddVehicle id={idInfoRemovingOrediting} isModalOpen={modalVehicleIsOpen} closeModal={()=>{setModalVehicleIsOpen(false)}}/>
             <ModalAddDriver id={idInfoRemovingOrediting} isModalOpen={modalDriverIsOpen} closeModal={()=>{setModalDriverIsOpen(false)}}/>
             <ModalRemoveInfo isModalOpen={modaRemoveInfoIsOpen} closeModal={()=>{setModalRemoveInfoIsOpen(false)}} tableName={listItems} id={idInfoRemovingOrediting}/>
+            {showAlert && <AlertMessage message={message} close={()=>{setShowAlert(false)}}/>}
         </Container>
     )
 }
