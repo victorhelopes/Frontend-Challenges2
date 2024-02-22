@@ -1,15 +1,9 @@
 import { Alert } from "@mui/material";
 import { useEffect } from "react";
-
-interface IAlertMessage{
-    message: string;
-    close: ()=> void;
-}
-
-const FIVE_SECONDS = 5000
+import { FIVE_SECONDS } from "../../constants";
+import { IAlertMessage } from "../../common/types";
 
 export function AlertMessage({message, close}: IAlertMessage){
-
     useEffect(()=>{
         setTimeout(close, FIVE_SECONDS)
     }, [close, message])

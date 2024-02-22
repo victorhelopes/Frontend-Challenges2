@@ -2,14 +2,9 @@ import { Box, Button, Grid, Modal, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { api } from "../../../../services";
 import { AlertMessage } from "../../../../components/AlertMessage";
+import { IModal } from "../../../../common/types";
 
-interface IModalAddVehicle{
-    id?: string;
-    isModalOpen: boolean
-    closeModal: ()=> void;
-}
-
-export function ModalAddVehicle({id, isModalOpen, closeModal}: IModalAddVehicle){
+export function ModalAddVehicle({id, isModalOpen, closeModal}: IModal){
     const [message, setMessage] = useState<string>('');
     const [showAlert, setShowAlert] = useState<boolean>(false);
 
@@ -93,10 +88,10 @@ export function ModalAddVehicle({id, isModalOpen, closeModal}: IModalAddVehicle)
     return(
         <Modal open={isModalOpen} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <div>
-                <Box sx={{background: 'white', width: '100%',maxWidth: '30rem', margin: 'auto', padding: '1rem'}}>
+                <Box sx={{background: 'white', width: '80%',maxWidth: '30rem', margin: 'auto', padding: '1rem'}}>
                     <Grid display={"flex"} flexDirection={'column'} gap={2}>
-                    <h1 style={{marginTop: 0}}>Cadastro de veículo</h1>
-                    <Grid display={'flex'} width={'100%'} gap={2}>
+                    <h1 style={{marginTop: 0}}>{id? 'Atualização' : 'Cadastro'} de veículo</h1>
+                    <Grid display={'flex'} flexDirection={{xs:'column', md: 'row'}} width={'100%'} gap={2}>
                         <TextField 
                             label='Marca' 
                             placeholder="Marca"

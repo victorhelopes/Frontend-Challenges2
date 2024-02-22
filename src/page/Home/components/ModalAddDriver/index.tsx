@@ -4,20 +4,11 @@ import { api } from "../../../../services";
 import TextField from "@mui/material/TextField";
 import { cpf } from "cpf-cnpj-validator";
 import { AlertMessage } from "../../../../components/AlertMessage";
+import { IModal, IVehicle } from "../../../../common/types";
 
-interface IModalAddVehicle{
-    id?: string;
-    isModalOpen: boolean
-    closeModal: ()=> void;
-}
 
-interface IVehicle {
-    brand: string;
-    licensePlate: string;
-    id: string;
-}
 
-export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
+export function ModalAddDriver({id, isModalOpen, closeModal}: IModal){
     const [message, setMessage] = useState<string>('');
     const [showAlert, setShowAlert] = useState<boolean>(false);
 
@@ -72,7 +63,7 @@ export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
             setDocumentError(null)
         }
 
-        if(!name.length || !document.length){
+        if(!name.length || !cpf.isValid(document)){
             return false;
         }
         return true;
@@ -122,10 +113,10 @@ export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
 
     return(
         <Modal open={isModalOpen} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-            <Box sx={{background: 'white', width: '100%',maxWidth: '30rem', margin: 'auto', padding: '1rem'}}>
-                <Grid display={"flex"} flexDirection={'column'} gap={2}>
-                    <h1 style={{marginTop: 0}}>Cadastro de motorista</h1>
-                    <Grid display={'flex'} width={'100%'} gap={2}>
+            <Box sx={{background: 'white', width: '80%',maxWidth: '30rem', margin: 'auto', padding: '1rem'}}>
+                    <Grid display={"flex"} flexDirection={'column'} gap={2}>
+                    <h1 style={{marginTop: 0}}>{id? 'Atualização' : 'Cadastro'} de motorista</h1>
+                    <Grid display={'flex'} flexDirection={{xs:'column', md: 'row'}} width={'100%'} gap={2}>
                         <TextField 
                             label='Nome'
                             placeholder="Nome"
@@ -171,7 +162,7 @@ export function ModalAddDriver({id, isModalOpen, closeModal}: IModalAddVehicle){
                             variant="contained" 
                             color="success" 
                             onClick={()=>{
-                                if(id) return updateDriver(); 
+                                if(id?.length) return updateDriver(); 
                                 return addDriver()
                             }}
                         >

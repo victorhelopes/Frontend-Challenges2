@@ -1,19 +1,13 @@
 import { Box, Button, Grid, Modal } from "@mui/material";
 import { api } from "../../../../services";
-
-interface IModalRemoveInfo{
-    isModalOpen: boolean;
-    closeModal: ()=>void;
-    id: string;
-    tableName:string;
-}
+import { IModalRemoveInfo } from "../../../../common/types";
 
 export function ModalRemoveInfo({isModalOpen, closeModal, id, tableName}: IModalRemoveInfo){
  
     async function removeInfo(){
         if(tableName ==='vehicle'){
             try{
-                await api.delete(`vehicle/${id}`);
+                await api.delete(`vehicle/${id}?_dependent=driver`);
             }catch(e){
 
             }
