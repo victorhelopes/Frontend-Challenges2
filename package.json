@@ -29,7 +29,7 @@
   },
   "scripts": {
     "start": "concurrently  \"react-scripts start\" \"npx json-server -p 4000 --watch src/database/db.json\"",
-    "build": "concurrently \"react-scripts build\" \"npx json-server -p 4000 --watch src/database/db.json\"",
+    "build": "react-scripts build & npx json-server -p 4000 --watch src/database/db.json\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
